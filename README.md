@@ -1,4 +1,6 @@
 Django REST API for Message Handling
+
+
 This Django project provides a RESTful API for handling messages between users. Users can send messages to each other, view their messages, mark messages as read, and delete messages. The API also includes user authentication and authorization mechanisms.
 
 Features
