@@ -5,12 +5,20 @@ This Django project provides a RESTful API for handling messages between users. 
 
 Features
 Write Message: Users can send messages to other users.
+
 Get All Messages: Users can retrieve all messages sent to them.
+
 Get Unread Messages: Users can retrieve only their unread messages.
+
 Read Message: Users can view a specific message and mark it as read.
+
 Delete Message: Users can delete messages they sent or received.
+
 User Authentication: API endpoints are protected with JWT authentication.
+
 Admin User Creation: Admin users can create new users.
+
+
 
 Installation
 
