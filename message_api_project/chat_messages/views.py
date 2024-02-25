@@ -8,11 +8,13 @@ from .serializers import MessageSerializer
 from django.contrib.auth.models import User
 
 
-class DeleteMessageAPIView(generics.DestroyAPIView):
+class BaseMessageAPIView:
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
 
+
+class DeleteMessageAPIView(BaseMessageAPIView, generics.DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
@@ -24,18 +26,12 @@ class DeleteMessageAPIView(generics.DestroyAPIView):
                             status=status.HTTP_403_FORBIDDEN)
 
 
-class ReceiveAllMessages(generics.ListAPIView):
-    serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated]
-
+class ReceiveAllMessages(BaseMessageAPIView, generics.ListAPIView):
     def get_queryset(self):
         return Message.objects.filter(receiver=self.request.user)
 
 
-class ReadMessageAPIView(generics.RetrieveAPIView):
-    serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated]
-
+class ReadMessageAPIView(BaseMessageAPIView, generics.RetrieveAPIView):
     def get_object(self):
         unread_message = Message.objects.filter(receiver=self.request.user, is_read=False).first()
         if unread_message:
@@ -72,11 +68,7 @@ class CreateUserAPIView(APIView):
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class MessageListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated]
-
+class MessageListCreateAPIView(BaseMessageAPIView, generics.ListCreateAPIView):
     def has_permission(self, request):
         if request.method == 'POST':
             return True
@@ -86,9 +78,6 @@ class MessageListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(sender=self.request.user)
 
 
-class UnreadMessageListAPIView(generics.ListAPIView):
-    serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated]
-
+class UnreadMessageListAPIView(BaseMessageAPIView, generics.ListAPIView):
     def get_queryset(self):
         return Message.objects.filter(receiver=self.request.user, is_read=False)
